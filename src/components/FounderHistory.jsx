@@ -1,10 +1,9 @@
-import React from 'react';
+'use client';
+
 import { Quote } from 'lucide-react';
-// Importing images
-import imgFounder from '../assets/images/5.webp'; // Using a placeholder image from assets
 import RevealOnScroll from './RevealOnScroll';
 
-const FounderHistory = () => {
+export default function FounderHistory() {
     return (
         <section className="section" style={{ backgroundColor: '#ffffff' }}>
             <div className="container">
@@ -16,33 +15,28 @@ const FounderHistory = () => {
                         alignItems: 'center'
                     }}>
 
-                        {/* Left: Image/Card */}
                         <div style={{ position: 'relative' }}>
                             <div style={{
                                 width: '100%',
                                 height: '450px',
                                 backgroundColor: '#f1f5f9',
-                                borderRadius: '2px', // Square/Sharp corners as per reference style
+                                borderRadius: '2px',
                                 overflow: 'hidden',
                                 boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
                             }}>
-                                {/* Note: In a real scenario, this would be the founder's photo from the brochure. 
-                      Using a generic asset or placeholder here as instructed. */}
                                 <img
-                                    src="https://ui-avatars.com/api/?name=Abu+Nur+Jazuli&background=111827&color=fff&size=500" // Placeholder fallback
-                                    // src={imgFounder} // Uncomment if 5.webp is the founder
+                                    src="https://ui-avatars.com/api/?name=Abu+Nur+Jazuli&background=111827&color=fff&size=500"
                                     alt="KH. Abu Nur Jazuli Nahrawi Amaith"
                                     loading="lazy"
                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 />
                             </div>
 
-                            {/* Name Card */}
                             <div style={{
                                 position: 'absolute',
                                 bottom: '-30px',
                                 right: '20px',
-                                backgroundColor: '#B45309', // Darker Gold/Bronze
+                                backgroundColor: '#B45309',
                                 padding: '25px',
                                 color: '#ffffff',
                                 maxWidth: '300px',
@@ -57,7 +51,6 @@ const FounderHistory = () => {
                             </div>
                         </div>
 
-                        {/* Right: History Text */}
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
                                 <Quote size={40} color="#F59E0B" style={{ opacity: 0.5 }} />
@@ -65,18 +58,18 @@ const FounderHistory = () => {
                             </div>
 
                             <p style={{ fontSize: '1.1rem', color: '#111827', fontWeight: '500', marginBottom: '20px' }}>
-                                "Perjalanan panjang dari majelis taklim hingga menjadi lembaga pendidikan formal yang diakui."
+                                &ldquo;Perjalanan panjang dari majelis taklim hingga menjadi lembaga pendidikan formal yang diakui.&rdquo;
                             </p>
 
                             <div style={{ color: '#4B5563', lineHeight: '1.8' }}>
                                 <p style={{ marginBottom: '20px' }}>
-                                    Pesantren An-Nuriyyah memiliki sejarah perkembangan yang panjang, berawal dari rintisan majelis taklim dan tahfiz Al-Qur’an oleh <strong>KH. Abu Nur Jazuli Amaith Al-Hafidz</strong> sejak tahun 1940-an.
+                                    Pesantren An-Nuriyyah memiliki sejarah perkembangan yang panjang, berawal dari rintisan majelis taklim dan tahfiz Al-Qur&apos;an oleh <strong>KH. Abu Nur Jazuli Amaith Al-Hafidz</strong> sejak tahun 1940-an.
                                 </p>
                                 <p style={{ marginBottom: '20px' }}>
                                     Hingga akhirnya diakui secara resmi pada <strong>1 April 1974</strong>. Kemudian pesantren ini secara bertahap memperluas cakupan pendidikannya dengan mendirikan SMP An-Nuriyyah (1978) dan <strong>SMA An-Nuriyyah (1982)</strong>.
                                 </p>
                                 <p>
-                                    Hal ini dilakukan sebagai upaya untuk memberikan bekal ilmu dan keterampilan Al-Qur’an serta pendidikan umum yang lebih komprehensif dan berkelanjutan bagi para santri.
+                                    Hal ini dilakukan sebagai upaya untuk memberikan bekal ilmu dan keterampilan Al-Qur&apos;an serta pendidikan umum yang lebih komprehensif dan berkelanjutan bagi para santri.
                                 </p>
                             </div>
 
@@ -90,6 +83,4 @@ const FounderHistory = () => {
             </div>
         </section>
     );
-};
-
-export default FounderHistory;
+}

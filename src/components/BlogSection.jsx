@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import img1 from '../assets/images/1.webp';
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import RevealOnScroll from './RevealOnScroll';
 import BlogPost from './BlogPost';
 
-const API_URL = import.meta.env.DEV ? 'http://localhost:3001' : '';
-
-const BlogSection = () => {
+export default function BlogSection() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/public/articles?limit=3`);
+                const response = await fetch('/api/public/articles?limit=3');
                 const data = await response.json();
                 if (data.articles) {
                     setPosts(data.articles);
@@ -35,14 +34,13 @@ const BlogSection = () => {
 
     const getImageUrl = (article) => {
         if (article.thumbnail) {
-            return `${API_URL}${article.thumbnail}`;
+            return article.thumbnail;
         }
-        return img1; // Default fallback image
+        return '/images/1.webp';
     };
 
     const getExcerpt = (content) => {
         if (!content) return '';
-        // Strip HTML tags and get first 100 chars
         const stripped = content.replace(/<[^>]*>/g, '');
         return stripped.substring(0, 100) + (stripped.length > 100 ? '...' : '');
     };
@@ -56,7 +54,7 @@ const BlogSection = () => {
                         <h2 className="section-title" style={{ textAlign: 'left', margin: 0 }}>Latest from School</h2>
                     </div>
 
-                    <Link to="/allpost" className="btn btn-outline" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>View All Posts</Link>
+                    <Link href="/allpost" className="btn btn-outline" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>View All Posts</Link>
                 </div>
 
                 {loading ? (
@@ -89,7 +87,4 @@ const BlogSection = () => {
             `}</style>
         </section>
     );
-};
-
-export default BlogSection;
-
+}

@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 
+# Next.js
+.next/
+out/
+
 # Build output
 dist/
 
@@ -21,12 +25,19 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Database (local)
-server/*.db
+# Database (Turso - no local db needed)
+# (Turso is remote)
 
-# Uploads
-server/uploads/*
-!server/uploads/.gitkeep
+# Uploads (local dev)
+public/uploads/*
+!public/uploads/.gitkeep
 
-# Vercel (not using)
+# Vercel
 .vercel
+
+# Debug
+npm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

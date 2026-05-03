@@ -1,7 +1,8 @@
-import React from 'react';
+'use client';
+
 import { CheckCircle, DollarSign, Calendar, Send } from 'lucide-react';
 
-const Admissions = () => {
+export default function Admissions() {
     return (
         <section id="spmb" className="section" style={{ backgroundColor: '#fff' }}>
             <div className="container">
@@ -13,7 +14,6 @@ const Admissions = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
 
-                    {/* Card Biaya */}
                     <div style={{
                         padding: '30px',
                         borderRadius: '16px',
@@ -36,7 +36,6 @@ const Admissions = () => {
                         </ul>
                     </div>
 
-                    {/* Card Syarat */}
                     <div style={{
                         padding: '30px',
                         borderRadius: '16px',
@@ -47,16 +46,15 @@ const Admissions = () => {
                             <CheckCircle size={24} color="#F59E0B" /> Syarat Pendaftaran
                         </h3>
                         <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.95rem', color: '#4B5563' }}>
-                            <li>• Mengisi Formulir Pendaftaran</li>
-                            <li>• Fotokopi Ijazah/SKL SMP/MTs (Legalisir)</li>
-                            <li>• Fotokopi KTP Orang Tua (2 Lembar)</li>
-                            <li>• Fotokopi Kartu Keluarga (2 Lembar)</li>
-                            <li>• Fotokopi Akta Kelahiran</li>
-                            <li>• Fotokopi KIP/PKH (Jika Ada)</li>
+                            <li>&#8226; Mengisi Formulir Pendaftaran</li>
+                            <li>&#8226; Fotokopi Ijazah/SKL SMP/MTs (Legalisir)</li>
+                            <li>&#8226; Fotokopi KTP Orang Tua (2 Lembar)</li>
+                            <li>&#8226; Fotokopi Kartu Keluarga (2 Lembar)</li>
+                            <li>&#8226; Fotokopi Akta Kelahiran</li>
+                            <li>&#8226; Fotokopi KIP/PKH (Jika Ada)</li>
                         </ul>
                     </div>
 
-                    {/* Card Beasiswa */}
                     <div style={{
                         padding: '30px',
                         borderRadius: '16px',
@@ -82,7 +80,6 @@ const Admissions = () => {
 
                 </div>
 
-                {/* Waktu Pendaftaran */}
                 <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'center', marginBottom: '80px' }}>
                     <div style={{
                         display: 'flex',
@@ -98,7 +95,6 @@ const Admissions = () => {
                     </div>
                 </div>
 
-                {/* NEW CONTACT FORM */}
                 <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center', marginBottom: '80px' }}>
                     <h3 style={{ fontSize: '1.5rem', marginBottom: '30px' }}>Ada Pertanyaan? Hubungi Kami</h3>
                     <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }} onSubmit={(e) => e.preventDefault()}>
@@ -171,6 +167,4 @@ const Admissions = () => {
             </div>
         </section>
     );
-};
-
-export default Admissions;
+}

@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// Importing images
-import img1 from '../assets/images/1.webp';
-import img2 from '../assets/images/2.webp';
-import img3 from '../assets/images/3.webp';
 import RevealOnScroll from './RevealOnScroll';
 
-const Programs = () => {
+export default function Programs() {
     const [activeTab, setActiveTab] = useState('unggulan');
     const [currentImage, setCurrentImage] = useState(0);
 
-    const programImages = [img3, img1, img2];
+    const programImages = ['/images/3.webp', '/images/1.webp', '/images/2.webp'];
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -19,7 +17,6 @@ const Programs = () => {
         return () => clearInterval(timer);
     }, []);
 
-    // Data from brochure
     const programs = [
         "Program MABIT (Malam Bimbingan Iman & Taqwa)",
         "Program SABSAH (Sabtu Sehat)",
@@ -66,10 +63,8 @@ const Programs = () => {
                     </div>
                 </div>
 
-                {/* Main Content Grid: Fixed explicit grid style */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '60px', alignItems: 'center' }}>
 
-                    {/* List */}
                     <div>
                         <ul style={{ borderTop: '1px solid #E5E7EB' }}>
                             {displayList.map((item, index) => (
@@ -88,14 +83,12 @@ const Programs = () => {
                             ))}
                         </ul>
 
-                        {/* Decorative Crosshair Grid */}
                         <div style={{ marginTop: '50px', position: 'relative' }}>
                             <div className="crosshair"></div>
                             <div className="crosshair" style={{ position: 'absolute', top: '50px', left: '0' }}></div>
                         </div>
                     </div>
 
-                    {/* Right Image Slider: Wrapped correctly in RevealOnScroll */}
                     <RevealOnScroll delay={0.3}>
                         <div style={{ position: 'relative', height: '500px' }}>
                             <div style={{
@@ -122,7 +115,6 @@ const Programs = () => {
                                     />
                                 </AnimatePresence>
 
-                                {/* Slider Indicators */}
                                 <div style={{
                                     position: 'absolute',
                                     bottom: '20px',
@@ -149,7 +141,6 @@ const Programs = () => {
                                 </div>
                             </div>
 
-                            {/* Dark Overlay Box */}
                             <div style={{
                                 position: 'absolute',
                                 bottom: '40px',
@@ -174,6 +165,4 @@ const Programs = () => {
             </div>
         </section>
     );
-};
-
-export default Programs;
+}

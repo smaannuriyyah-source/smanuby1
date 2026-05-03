@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import img1 from '../assets/images/1.webp';
-import img2 from '../assets/images/2.webp';
-import img3 from '../assets/images/3.webp';
+import Link from 'next/link';
 
-// Use localhost in development, empty string (relative) in production
-const API_URL = import.meta.env.DEV ? 'http://localhost:3001' : '';
-
-// Fallback slides when no articles exist
 const fallbackSlides = [
     {
         id: 'fallback-1',
-        image: img3,
+        image: '/images/3.webp',
         title: "Sistem Penerimaan Murid Baru",
         subtitle: "Tahun Pelajaran 2026/2027",
         desc: "Bergabunglah dengan kami untuk membentuk generasi Ulil Albab yang unggul dan berakhlak mulia.",
@@ -23,7 +18,7 @@ const fallbackSlides = [
     },
     {
         id: 'fallback-2',
-        image: img1,
+        image: '/images/1.webp',
         title: "Prestasi Gemilang Siswa",
         subtitle: "Juara Umum Tk. Kabupaten",
         desc: "Siswa SMA Annuriyyah terus mengukir prestasi di bidang akademik maupun non-akademik.",
@@ -33,7 +28,7 @@ const fallbackSlides = [
     },
     {
         id: 'fallback-3',
-        image: img2,
+        image: '/images/2.webp',
         title: "Lingkungan Belajar Kondusif",
         subtitle: "Fasilitas Lengkap & Modern",
         desc: "Didukung dengan laboratorium, perpustakaan, dan fasilitas penunjang pembelajaran lainnya.",
@@ -43,7 +38,7 @@ const fallbackSlides = [
     }
 ];
 
-const Hero = () => {
+export default function Hero() {
     const [current, setCurrent] = useState(0);
     const [slides, setSlides] = useState(fallbackSlides);
     const [loading, setLoading] = useState(true);
@@ -51,13 +46,13 @@ const Hero = () => {
     useEffect(() => {
         const fetchLatestPosts = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/public/articles?limit=5`);
+                const response = await fetch('/api/public/articles?limit=5');
                 const data = await response.json();
 
                 if (data.articles && data.articles.length > 0) {
                     const articleSlides = data.articles.map(article => ({
                         id: article.id,
-                        image: article.thumbnail ? `${API_URL}${article.thumbnail}` : img1,
+                        image: article.thumbnail || '/images/1.webp',
                         title: article.title,
                         subtitle: article.category_name || 'Berita Terbaru',
                         desc: article.content
@@ -71,7 +66,6 @@ const Hero = () => {
                 }
             } catch (error) {
                 console.error('Failed to fetch articles for hero:', error);
-                // Keep fallback slides
             } finally {
                 setLoading(false);
             }
@@ -83,7 +77,7 @@ const Hero = () => {
         if (slides.length === 0) return;
         const timer = setInterval(() => {
             setCurrent((prev) => (prev + 1) % slides.length);
-        }, 6000); // 6 seconds per slide
+        }, 6000);
         return () => clearInterval(timer);
     }, [slides.length]);
 
@@ -110,7 +104,6 @@ const Hero = () => {
     return (
         <section style={{ position: 'relative', height: '100vh', width: '100%', overflow: 'hidden', backgroundColor: '#000' }}>
 
-            {/* Slider Content */}
             <div style={{ position: 'relative', height: '100%', zIndex: 10 }}>
                 <AnimatePresence mode='wait'>
                     <motion.div
@@ -130,7 +123,6 @@ const Hero = () => {
                             justifyContent: 'center'
                         }}
                     >
-                        {/* Background Image of the Slide */}
                         <div style={{
                             position: 'absolute',
                             top: 0,
@@ -140,10 +132,9 @@ const Hero = () => {
                             backgroundImage: `url(${slides[current].image})`,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
-                            filter: 'brightness(0.3)' // Darken for text readability
+                            filter: 'brightness(0.3)'
                         }}></div>
 
-                        {/* Text Content */}
                         <div className="container" style={{ position: 'relative', zIndex: 20, color: '#fff', textAlign: 'center' }}>
                             <motion.div
                                 initial={{ y: 20, opacity: 0 }}
@@ -183,7 +174,7 @@ const Hero = () => {
 
                                 {slides[current].isArticle ? (
                                     <Link
-                                        to={slides[current].link}
+                                        href={slides[current].link}
                                         style={{
                                             padding: '15px 40px',
                                             fontSize: '1.1rem',
@@ -200,7 +191,7 @@ const Hero = () => {
                                     </Link>
                                 ) : slides[current].link.startsWith('/') ? (
                                     <Link
-                                        to={slides[current].link}
+                                        href={slides[current].link}
                                         style={{
                                             padding: '15px 40px',
                                             fontSize: '1.1rem',
@@ -236,7 +227,6 @@ const Hero = () => {
                     </motion.div>
                 </AnimatePresence>
 
-                {/* Navigation Controls */}
                 <div style={{
                     position: 'absolute',
                     bottom: '50px',
@@ -276,7 +266,6 @@ const Hero = () => {
                     </button>
                 </div>
 
-                {/* Slide Indicators (Dots) */}
                 <div style={{
                     position: 'absolute',
                     bottom: '50px',
@@ -303,7 +292,4 @@ const Hero = () => {
             </div>
         </section>
     );
-};
-
-export default Hero;
-
+}

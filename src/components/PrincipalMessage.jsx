@@ -1,6 +1,6 @@
-import React from 'react';
+'use client';
 
-const PrincipalMessage = () => {
+export default function PrincipalMessage() {
     return (
         <section className="section" style={{ backgroundColor: '#ffffff' }}>
             <div className="container">
@@ -19,7 +19,6 @@ const PrincipalMessage = () => {
                             overflow: 'hidden',
                             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
                         }}>
-                            {/* Placeholder image since we don't have the real file */}
                             <img
                                 src="https://ui-avatars.com/api/?name=Faqihudin+Amaith&background=0F172A&color=fff&size=400"
                                 alt="Faqihudin Amaith"
@@ -44,10 +43,10 @@ const PrincipalMessage = () => {
                     <div>
                         <h2 className="section-title" style={{ textAlign: 'left' }}>Sambutan Kepala Sekolah</h2>
                         <p style={{ fontSize: '1.1rem', color: '#64748B', marginBottom: '20px' }}>
-                            "Pendidikan adalah tiket untuk masa depan. Hari esok dimiliki oleh orang-orang yang mempersiapkan dirinya hari ini."
+                            &ldquo;Pendidikan adalah tiket untuk masa depan. Hari esok dimiliki oleh orang-orang yang mempersiapkan dirinya hari ini.&rdquo;
                         </p>
                         <p style={{ color: '#334155', marginBottom: '20px' }}>
-                            Assalamu'alaikum Warahmatullahi Wabarakatuh.
+                            Assalamu&apos;alaikum Warahmatullahi Wabarakatuh.
                         </p>
                         <p style={{ color: '#334155', marginBottom: '30px' }}>
                             Selamat datang di website resmi SMA Annuriyyah Bumiayu. Website ini kami hadirkan sebagai media informasi dan komunikasi bagi seluruh civitas akademika dan masyarakat umum. Kami berkomitmen untuk mencetak generasi yang tidak hanya cerdas secara intelektual, tetapi juga memiliki akhlak yang mulia.
@@ -60,6 +59,4 @@ const PrincipalMessage = () => {
             </div>
         </section>
     );
-};
-
-export default PrincipalMessage;
+}
