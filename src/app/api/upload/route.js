@@ -31,6 +31,9 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Gagal mengupload gambar' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Gagal mengupload gambar' },
+      { status: 500 }
+    );
   }
 }

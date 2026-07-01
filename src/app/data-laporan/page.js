@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
-import { FileText, Download, Loader2, Search } from 'lucide-react';
+import { FileText, Download, Loader2, Search, Eye } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DataLaporanPage() {
     const [items, setItems] = useState([]);
@@ -39,11 +40,9 @@ export default function DataLaporanPage() {
         });
     };
 
-    const getFileIcon = (url) => {
-        if (!url) return <FileText size={20} />;
-        if (url.match(/\.(pdf)$/i)) return <FileText size={20} color="#DC2626" />;
-        if (url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) return <FileText size={20} color="#16A34A" />;
-        return <FileText size={20} color="#2563EB" />;
+    const isImage = (url) => {
+        if (!url) return false;
+        return url.match(/\.(jpg|jpeg|png|gif|webp)$/i);
     };
 
     return (
@@ -107,32 +106,67 @@ export default function DataLaporanPage() {
                                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
                                     >
                                         <td style={{ padding: '16px 20px', color: '#6B7280', fontSize: '0.95rem' }}>{idx + 1}</td>
-                                        <td style={{ padding: '16px 20px', color: '#111827', fontSize: '0.95rem', fontWeight: '500' }}>{item.name}</td>
+                                        <td style={{ padding: '16px 20px', color: '#111827', fontSize: '0.95rem', fontWeight: '500' }}>
+                                            {item.slug ? (
+                                                <Link href={`/data-laporan/${item.slug}`} style={{ color: '#111827', textDecoration: 'none', fontWeight: '600' }}
+                                                    onMouseEnter={(e) => e.target.style.color = '#2563EB'}
+                                                    onMouseLeave={(e) => e.target.style.color = '#111827'}
+                                                >
+                                                    {item.name}
+                                                </Link>
+                                            ) : (
+                                                item.name
+                                            )}
+                                        </td>
                                         <td style={{ padding: '16px 20px', color: '#6B7280', fontSize: '0.9rem' }}>{formatDate(item.created_at)}</td>
                                         <td style={{ padding: '16px 20px', textAlign: 'center' }}>
                                             {item.file_url ? (
-                                                <a
-                                                    href={item.file_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style={{
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        gap: '6px',
-                                                        padding: '8px 16px',
-                                                        backgroundColor: '#EFF6FF',
-                                                        color: '#2563EB',
-                                                        borderRadius: '8px',
-                                                        textDecoration: 'none',
-                                                        fontSize: '0.85rem',
-                                                        fontWeight: '500',
-                                                        transition: 'all 0.2s'
-                                                    }}
-                                                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#2563EB'; e.currentTarget.style.color = '#fff'; }}
-                                                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#EFF6FF'; e.currentTarget.style.color = '#2563EB'; }}
-                                                >
-                                                    <Download size={16} /> Lihat File
-                                                </a>
+                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                                    {item.slug && (
+                                                        <Link href={`/data-laporan/${item.slug}`}
+                                                            style={{
+                                                                display: 'inline-flex',
+                                                                alignItems: 'center',
+                                                                gap: '6px',
+                                                                padding: '8px 16px',
+                                                                backgroundColor: '#F0FDF4',
+                                                                color: '#16A34A',
+                                                                borderRadius: '8px',
+                                                                textDecoration: 'none',
+                                                                fontSize: '0.85rem',
+                                                                fontWeight: '500',
+                                                                transition: 'all 0.2s'
+                                                            }}
+                                                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#16A34A'; e.currentTarget.style.color = '#fff'; }}
+                                                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#F0FDF4'; e.currentTarget.style.color = '#16A34A'; }}
+                                                        >
+                                                            <Eye size={16} /> Detail
+                                                        </Link>
+                                                    )}
+                                                    <a
+                                                        href={item.file_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        style={{
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            gap: '6px',
+                                                            padding: '8px 16px',
+                                                            backgroundColor: '#EFF6FF',
+                                                            color: '#2563EB',
+                                                            borderRadius: '8px',
+                                                            textDecoration: 'none',
+                                                            fontSize: '0.85rem',
+                                                            fontWeight: '500',
+                                                            transition: 'all 0.2s'
+                                                        }}
+                                                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#2563EB'; e.currentTarget.style.color = '#fff'; }}
+                                                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#EFF6FF'; e.currentTarget.style.color = '#2563EB'; }}
+                                                    >
+                                                        <Download size={16} />
+                                                        {isImage(item.file_url) ? 'Lihat Gambar' : 'Lihat File'}
+                                                    </a>
+                                                </div>
                                             ) : (
                                                 <span style={{ color: '#9CA3AF', fontSize: '0.85rem' }}>-</span>
                                             )}

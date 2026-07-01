@@ -89,7 +89,10 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ message: 'Pengumuman berhasil diupdate', announcement: updated.rows[0] });
   } catch (error) {
     console.error('Update announcement error:', error);
-    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Terjadi kesalahan server' },
+      { status: 500 }
+    );
   }
 }
 

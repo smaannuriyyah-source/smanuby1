@@ -3,6 +3,7 @@ import getDatabase from '@/lib/db';
 import { authenticate, unauthorized } from '@/lib/auth';
 import { handleUpload } from '@/lib/upload';
 import { MAX_FILE_SIZE } from '@/lib/config';
+import { generateUniqueSlug } from '@/lib/slug';
 
 export async function GET(request, { params }) {
   const user = authenticate(request);
@@ -46,10 +47,16 @@ export async function PUT(request, { params }) {
 
     const formData = await request.formData();
     const name = formData.get('name');
+    const description = formData.get('description');
     const file = formData.get('file');
 
     if (name) {
-      await db.execute({ sql: 'UPDATE data_laporan SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', args: [name, itemId] });
+      // Regenerate slug if name changed
+      const newSlug = await generateUniqueSlug(db, name, itemId);
+      await db.execute({
+        sql: 'UPDATE data_laporan SET name = ?, slug = ?, description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        args: [name, newSlug, description !== null ? description : existing.rows[0].description, itemId]
+      });
     }
 
     if (file && file.size > 0) {
@@ -69,7 +76,10 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ message: 'Data laporan berhasil diupdate', data_laporan: updated.rows[0] });
   } catch (error) {
     console.error('Update data_laporan error:', error);
-    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Terjadi kesalahan server' },
+      { status: 500 }
+    );
   }
 }
 

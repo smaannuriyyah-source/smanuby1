@@ -9,7 +9,7 @@ export default function DataLaporanDashboardPage() {
     const [showModal, setShowModal] = useState(false);
     const [viewingItem, setViewingItem] = useState(null);
     const [editingItem, setEditingItem] = useState(null);
-    const [formData, setFormData] = useState({ name: '', file: null });
+    const [formData, setFormData] = useState({ name: '', description: '', file: null });
     const [uploadError, setUploadError] = useState('');
 
     useEffect(() => {
@@ -38,6 +38,7 @@ export default function DataLaporanDashboardPage() {
         try {
             const formDataToSend = new FormData();
             formDataToSend.append('name', formData.name);
+            formDataToSend.append('description', formData.description);
             if (formData.file) formDataToSend.append('file', formData.file);
 
             const token = localStorage.getItem('token');
@@ -82,10 +83,10 @@ export default function DataLaporanDashboardPage() {
     const openModal = (item = null) => {
         if (item) {
             setEditingItem(item);
-            setFormData({ name: item.name, file: null });
+            setFormData({ name: item.name, description: item.description || '', file: null });
         } else {
             setEditingItem(null);
-            setFormData({ name: '', file: null });
+            setFormData({ name: '', description: '', file: null });
         }
         setUploadError('');
         setShowModal(true);
@@ -95,7 +96,7 @@ export default function DataLaporanDashboardPage() {
         setShowModal(false);
         setEditingItem(null);
         setViewingItem(null);
-        setFormData({ name: '', file: null });
+        setFormData({ name: '', description: '', file: null });
         setUploadError('');
     };
 
@@ -133,6 +134,7 @@ export default function DataLaporanDashboardPage() {
                             <tr style={{ backgroundColor: '#F9FAFB', borderBottom: '1px solid #E5E7EB' }}>
                                 <th style={{ padding: '12px', textAlign: 'left', fontSize: '0.85rem', fontWeight: '600', color: '#374151' }}>No</th>
                                 <th style={{ padding: '12px', textAlign: 'left', fontSize: '0.85rem', fontWeight: '600', color: '#374151' }}>Nama Laporan</th>
+                                <th style={{ padding: '12px', textAlign: 'left', fontSize: '0.85rem', fontWeight: '600', color: '#374151' }}>Slug</th>
                                 <th style={{ padding: '12px', textAlign: 'left', fontSize: '0.85rem', fontWeight: '600', color: '#374151' }}>File Upload</th>
                                 <th style={{ padding: '12px', textAlign: 'left', fontSize: '0.85rem', fontWeight: '600', color: '#374151' }}>Penulis</th>
                                 <th style={{ padding: '12px', textAlign: 'left', fontSize: '0.85rem', fontWeight: '600', color: '#374151' }}>Tanggal</th>
@@ -141,12 +143,13 @@ export default function DataLaporanDashboardPage() {
                         </thead>
                         <tbody>
                             {items.length === 0 ? (
-                                <tr><td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>Belum ada data laporan</td></tr>
+                                <tr><td colSpan="7" style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>Belum ada data laporan</td></tr>
                             ) : (
                                 items.map((item, idx) => (
                                     <tr key={item.id} style={{ borderBottom: '1px solid #E5E7EB' }}>
                                         <td style={{ padding: '12px', fontSize: '0.9rem', color: '#6B7280' }}>{idx + 1}</td>
                                         <td style={{ padding: '12px', fontSize: '0.9rem', color: '#111827', fontWeight: '500' }}>{item.name}</td>
+                                        <td style={{ padding: '12px', fontSize: '0.85rem', color: '#6B7280', fontFamily: 'monospace' }}>{item.slug || '-'}</td>
                                         <td style={{ padding: '12px' }}>
                                             {item.file_url ? (
                                                 <a
@@ -211,6 +214,15 @@ export default function DataLaporanDashboardPage() {
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     required
                                     style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #D1D5DB', fontSize: '1rem', boxSizing: 'border-box' }}
+                                />
+                            </div>
+                            <div style={{ marginBottom: '20px' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: '500', color: '#374151' }}>Deskripsi</label>
+                                <textarea
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    rows={3}
+                                    style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #D1D5DB', fontSize: '1rem', boxSizing: 'border-box', resize: 'vertical' }}
                                 />
                             </div>
                             <div style={{ marginBottom: '20px' }}>

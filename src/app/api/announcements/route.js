@@ -76,7 +76,10 @@ export async function POST(request) {
     return NextResponse.json({ message: 'Pengumuman berhasil dibuat', announcement: announcement.rows[0] }, { status: 201 });
   } catch (error) {
     console.error('Create announcement error:', error);
-    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Terjadi kesalahan server' },
+      { status: 500 }
+    );
   }
 }
 

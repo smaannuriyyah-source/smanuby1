@@ -3,6 +3,7 @@ import getDatabase from '@/lib/db';
 import { authenticate, unauthorized } from '@/lib/auth';
 import { handleUpload } from '@/lib/upload';
 import { MAX_FILE_SIZE } from '@/lib/config';
+import { generateUniqueSlug } from '@/lib/slug';
 
 export async function GET(request) {
   const user = authenticate(request);
@@ -30,6 +31,7 @@ export async function POST(request) {
     const db = getDatabase();
     const formData = await request.formData();
     const name = formData.get('name');
+    const description = formData.get('description');
     const file = formData.get('file');
 
     if (!name) {
@@ -45,9 +47,11 @@ export async function POST(request) {
       fileUrl = uploadResult.url;
     }
 
+    const slug = await generateUniqueSlug(db, name);
+
     const result = await db.execute({
-      sql: 'INSERT INTO data_laporan (name, file_url, author_id) VALUES (?, ?, ?)',
-      args: [name, fileUrl, user.id]
+      sql: 'INSERT INTO data_laporan (name, slug, description, file_url, author_id) VALUES (?, ?, ?, ?, ?)',
+      args: [name, slug, description || null, fileUrl, user.id]
     });
 
     const item = await db.execute(`
@@ -59,6 +63,9 @@ export async function POST(request) {
     return NextResponse.json({ message: 'Data laporan berhasil dibuat', data_laporan: item.rows[0] }, { status: 201 });
   } catch (error) {
     console.error('Create data_laporan error:', error);
-    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Terjadi kesalahan server' },
+      { status: 500 }
+    );
   }
 }

@@ -18,28 +18,36 @@ if (isCloudinaryConfigured) {
 }
 
 export async function uploadToCloudinary(file, options = {}) {
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-  const uploadOptions = {
-    folder: options.folder || 'sekolahku',
-    resource_type: options.resourceType || 'image',
-  };
+    const uploadOptions = {
+      folder: options.folder || 'sekolahku',
+      resource_type: options.resourceType || 'image',
+    };
 
-  if (options.resourceType === 'raw') {
-    // Jangan gabung folder di public_id — folder sudah di-handle oleh opsi `folder`
-    uploadOptions.public_id = `${Date.now()}-${file.name}`;
-  } else {
-    uploadOptions.allowed_formats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-    uploadOptions.transformation = [{ width: 1200, crop: 'limit' }];
+    if (options.resourceType === 'raw') {
+      uploadOptions.public_id = `${Date.now()}-${file.name}`;
+    } else {
+      uploadOptions.allowed_formats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+      uploadOptions.transformation = [{ width: 1200, crop: 'limit' }];
+    }
+
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+        if (error) {
+          console.error('[Cloudinary upload error]', error);
+          reject(new Error(`Cloudinary: ${error.message || 'Upload gagal'}`));
+        } else {
+          resolve(result);
+        }
+      }).end(buffer);
+    });
+  } catch (err) {
+    console.error('[uploadToCloudinary error]', err);
+    throw new Error(`Gagal upload ke Cloudinary: ${err.message}`);
   }
-
-  return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
-      if (error) reject(error);
-      else resolve(result);
-    }).end(buffer);
-  });
 }
 
 export async function uploadToLocal(file, subdir = '') {

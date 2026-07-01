@@ -117,6 +117,8 @@ async function initDatabase() {
     CREATE TABLE IF NOT EXISTS data_laporan (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
+      slug TEXT,
+      description TEXT,
       file_url TEXT,
       author_id INTEGER NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -124,6 +126,17 @@ async function initDatabase() {
       FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
     )
   `);
+
+  // Migration: add slug and description columns if they don't exist (backward compat)
+  try {
+    await db.execute(`ALTER TABLE data_laporan ADD COLUMN slug TEXT`);
+  } catch (e) { /* column already exists */ }
+  try {
+    await db.execute(`ALTER TABLE data_laporan ADD COLUMN description TEXT`);
+  } catch (e) { /* column already exists */ }
+  try {
+    await db.execute(`CREATE UNIQUE INDEX IF NOT EXISTS idx_data_laporan_slug ON data_laporan(slug)`);
+  } catch (e) { /* index already exists */ }
 
   const result = await db.execute({ sql: "SELECT id FROM users WHERE username = ?", args: ['admin'] });
   if (result.rows.length === 0) {

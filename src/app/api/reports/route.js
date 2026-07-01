@@ -59,6 +59,9 @@ export async function POST(request) {
     return NextResponse.json({ message: 'Laporan berhasil dibuat', report: report.rows[0] }, { status: 201 });
   } catch (error) {
     console.error('Create report error:', error);
-    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Terjadi kesalahan server' },
+      { status: 500 }
+    );
   }
 }
