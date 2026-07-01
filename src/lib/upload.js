@@ -17,32 +17,53 @@ if (isCloudinaryConfigured) {
   console.warn('[upload] Cloudinary NOT configured, will use local file storage');
 }
 
+function sanitizePublicId(name) {
+  if (!name) return 'file';
+  return name
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-zA-Z0-9._-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .substring(0, 100);
+}
+
 export async function uploadToCloudinary(file, options = {}) {
   try {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const originalName = file.name || 'unnamed';
+    const safeName = sanitizePublicId(originalName);
 
     const uploadOptions = {
-      folder: options.folder || 'sekolahku',
       resource_type: options.resourceType || 'image',
     };
 
     if (options.resourceType === 'raw') {
-      uploadOptions.public_id = `${Date.now()}-${file.name}`;
+      // Untuk PDF/file: gunakan folder + public_id yang bersih
+      uploadOptions.folder = options.folder || 'sekolahku/files';
+      uploadOptions.public_id = `${Date.now()}-${safeName}`;
+      // Raw files tidak perlu allowed_formats atau transformation
     } else {
+      // Untuk gambar
+      uploadOptions.folder = options.folder || 'sekolahku';
       uploadOptions.allowed_formats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
       uploadOptions.transformation = [{ width: 1200, crop: 'limit' }];
     }
 
+    console.log('[Cloudinary] Uploading:', { name: originalName, resource_type: uploadOptions.resource_type, folder: uploadOptions.folder, public_id: uploadOptions.public_id });
+
     return new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+      const stream = cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
         if (error) {
-          console.error('[Cloudinary upload error]', error);
-          reject(new Error(`Cloudinary: ${error.message || 'Upload gagal'}`));
+          console.error('[Cloudinary upload error]', JSON.stringify(error, null, 2));
+          reject(new Error(`Cloudinary error: ${error.message || JSON.stringify(error)}`));
         } else {
+          console.log('[Cloudinary] Upload success:', result.public_id);
           resolve(result);
         }
-      }).end(buffer);
+      });
+      stream.end(buffer);
     });
   } catch (err) {
     console.error('[uploadToCloudinary error]', err);
