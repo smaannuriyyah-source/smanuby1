@@ -28,33 +28,53 @@ function sanitizePublicId(name) {
     .substring(0, 100);
 }
 
+function getMimeType(filename) {
+  const ext = filename.split('.').pop().toLowerCase();
+  const map = {
+    jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png',
+    gif: 'image/gif', webp: 'image/webp', pdf: 'application/pdf',
+    doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    txt: 'text/plain', zip: 'application/zip',
+  };
+  return map[ext] || 'application/octet-stream';
+}
+
 export async function uploadToCloudinary(file, options = {}) {
   try {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const originalName = file.name || 'unnamed';
     const safeName = sanitizePublicId(originalName);
+    const mimeType = getMimeType(originalName);
+
+    // Convert buffer to base64 data URI — more reliable than upload_stream on Vercel
+    const base64String = buffer.toString('base64');
+    const dataUri = `data:${mimeType};base64,${base64String}`;
 
     const uploadOptions = {
       resource_type: options.resourceType || 'image',
     };
 
     if (options.resourceType === 'raw') {
-      // Untuk PDF/file: gunakan folder + public_id yang bersih
       uploadOptions.folder = options.folder || 'sekolahku/files';
       uploadOptions.public_id = `${Date.now()}-${safeName}`;
-      // Raw files tidak perlu allowed_formats atau transformation
     } else {
-      // Untuk gambar
       uploadOptions.folder = options.folder || 'sekolahku';
       uploadOptions.allowed_formats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
       uploadOptions.transformation = [{ width: 1200, crop: 'limit' }];
     }
 
-    console.log('[Cloudinary] Uploading:', { name: originalName, resource_type: uploadOptions.resource_type, folder: uploadOptions.folder, public_id: uploadOptions.public_id });
+    console.log('[Cloudinary] Uploading via base64:', {
+      name: originalName,
+      resource_type: uploadOptions.resource_type,
+      folder: uploadOptions.folder,
+      public_id: uploadOptions.public_id,
+      size: file.size,
+    });
 
     return new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+      cloudinary.uploader.upload(dataUri, uploadOptions, (error, result) => {
         if (error) {
           console.error('[Cloudinary upload error]', JSON.stringify(error, null, 2));
           reject(new Error(`Cloudinary error: ${error.message || JSON.stringify(error)}`));
@@ -63,7 +83,6 @@ export async function uploadToCloudinary(file, options = {}) {
           resolve(result);
         }
       });
-      stream.end(buffer);
     });
   } catch (err) {
     console.error('[uploadToCloudinary error]', err);
@@ -109,7 +128,6 @@ export async function handleUpload(file, options = {}) {
     };
   }
 
-  // Di Vercel: lokal tidak mungkin — filesystem ephemeral
   if (isVercelEnvironment) {
     throw new Error(
       'Cloudinary tidak terkonfigurasi. Upload tidak tersedia di production. ' +
@@ -117,7 +135,6 @@ export async function handleUpload(file, options = {}) {
     );
   }
 
-  // Local fallback hanya untuk development
   console.warn('[upload] Cloudinary not configured, falling back to local storage (dev only)');
   return await uploadToLocal(file, options.subdir);
 }
