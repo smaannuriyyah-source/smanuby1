@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, LayoutDashboard, FileText, User, Users, FolderOpen, ClipboardList, Megaphone } from 'lucide-react';
+import { LogOut, LayoutDashboard, FileText, User, Users, FolderOpen, ClipboardList, Megaphone, Database } from 'lucide-react';
 
 export default function DashboardLayout({ children }) {
     const router = useRouter();
@@ -34,6 +34,7 @@ export default function DashboardLayout({ children }) {
         { href: '/dashboard/articles', label: 'Artikel', icon: FileText },
         { href: '/dashboard/categories', label: 'Kategori', icon: FolderOpen },
         { href: '/dashboard/announcements', label: 'Pengumuman', icon: Megaphone },
+        { href: '/dashboard/data-laporan', label: 'Data Laporan', icon: Database },
         { href: '/dashboard/registrations', label: 'Pendaftaran', icon: ClipboardList },
         ...(user?.role === 'admin' ? [{ href: '/dashboard/users', label: 'Pengguna', icon: Users }] : []),
         { href: '/dashboard/profile', label: 'Profile', icon: User },

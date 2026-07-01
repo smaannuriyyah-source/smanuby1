@@ -228,7 +228,7 @@ const useImageMarkerHandler = (content, setFormData) => {
         if (content && content.includes('[IMAGE:')) {
             const processedContent = content.replace(
                 /\[IMAGE:([^\]]+)\]/g,
-                '<img src="$1" alt="Image" style="max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; display: block;" />'
+                '<img src="$1" alt="Image" style="max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; display: block;" onerror="this.style.display=\'none\'; this.onerror=null;" />'
             );
             if (processedContent !== content) {
                 setFormData(prev => ({ ...prev, content: processedContent }));
@@ -458,7 +458,8 @@ export default function NewArticlePage() {
                             />
                             {formData.thumbnail ? (
                                 <div style={{ position: 'relative' }}>
-                                    <img src={formData.thumbnail} alt="Thumbnail" style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', borderRadius: '8px', marginBottom: '12px' }} />
+                                    <img src={formData.thumbnail} alt="Thumbnail" style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', borderRadius: '8px', marginBottom: '12px' }}
+                                      onError={(e) => { e.target.src = '/images/1.webp'; e.target.onerror = null; }} />
                                     <button type="button" onClick={() => setFormData(prev => ({ ...prev, thumbnail: '' }))} style={{ position: 'absolute', top: '8px', right: '8px', backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: '28px', height: '28px', cursor: 'pointer', fontSize: '14px' }}>
                                         x
                                     </button>

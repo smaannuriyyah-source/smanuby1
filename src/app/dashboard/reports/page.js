@@ -187,7 +187,8 @@ export default function ReportsPage() {
                             {viewingReport.photo && (
                                 <div>
                                     <p style={{ fontSize: '0.85rem', color: '#6B7280', marginBottom: '8px' }}>Foto</p>
-                                    <img src={viewingReport.photo} alt={viewingReport.title} style={{ width: '100%', borderRadius: '8px' }} />
+                                    <img src={viewingReport.photo} alt={viewingReport.title} style={{ width: '100%', borderRadius: '8px' }}
+                                      onError={(e) => { e.target.style.display = 'none'; e.target.onerror = null; }} />
                                 </div>
                             )}
                         </div>

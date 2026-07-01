@@ -16,6 +16,7 @@ export default function BlogPost({ id, image, date, title, excerpt, category }) 
       >
         <div style={{ height: '200px', overflow: 'hidden' }}>
           <img src={image || '/images/1.webp'} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
+            onError={(e) => { e.target.src = '/images/1.webp'; e.target.onerror = null; }}
             onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
             onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
           />

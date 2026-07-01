@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import getDatabase from '@/lib/db';
 import { authenticate, unauthorized } from '@/lib/auth';
 import { handleUpload } from '@/lib/upload';
-import fs from 'fs';
-import path from 'path';
+import { MAX_FILE_SIZE } from '@/lib/config';
 
 export async function GET(request, { params }) {
   const user = authenticate(request);
@@ -54,6 +53,9 @@ export async function PUT(request, { params }) {
     }
 
     if (photoFile && photoFile.size > 0) {
+      if (photoFile.size > MAX_FILE_SIZE) {
+        return NextResponse.json({ error: 'Ukuran file maksimal 2MB' }, { status: 400 });
+      }
       const uploadResult = await handleUpload(photoFile);
       await db.execute({ sql: 'UPDATE reports SET photo = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', args: [uploadResult.url, reportId] });
     }

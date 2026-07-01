@@ -4,12 +4,17 @@ const isCloudinaryConfigured = process.env.CLOUDINARY_CLOUD_NAME &&
   process.env.CLOUDINARY_API_KEY &&
   process.env.CLOUDINARY_API_SECRET;
 
+const isVercelEnvironment = process.env.VERCEL === '1';
+
 if (isCloudinaryConfigured) {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
+  console.log('[upload] Cloudinary configured for cloud:', process.env.CLOUDINARY_CLOUD_NAME);
+} else {
+  console.warn('[upload] Cloudinary NOT configured, will use local file storage');
 }
 
 export async function uploadToCloudinary(file, options = {}) {
@@ -22,7 +27,8 @@ export async function uploadToCloudinary(file, options = {}) {
   };
 
   if (options.resourceType === 'raw') {
-    uploadOptions.public_id = `${options.folder || 'sekolahku'}/${Date.now()}-${file.name}`;
+    // Jangan gabung folder di public_id — folder sudah di-handle oleh opsi `folder`
+    uploadOptions.public_id = `${Date.now()}-${file.name}`;
   } else {
     uploadOptions.allowed_formats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     uploadOptions.transformation = [{ width: 1200, crop: 'limit' }];
@@ -73,7 +79,18 @@ export async function handleUpload(file, options = {}) {
       size: file.size,
     };
   }
+
+  // Di Vercel: lokal tidak mungkin — filesystem ephemeral
+  if (isVercelEnvironment) {
+    throw new Error(
+      'Cloudinary tidak terkonfigurasi. Upload tidak tersedia di production. ' +
+      'Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, dan CLOUDINARY_API_SECRET di Vercel.'
+    );
+  }
+
+  // Local fallback hanya untuk development
+  console.warn('[upload] Cloudinary not configured, falling back to local storage (dev only)');
   return await uploadToLocal(file, options.subdir);
 }
 
-export { isCloudinaryConfigured };
+export { isCloudinaryConfigured, isVercelEnvironment };

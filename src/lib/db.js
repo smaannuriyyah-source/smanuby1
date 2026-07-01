@@ -113,9 +113,21 @@ async function initDatabase() {
     )
   `);
 
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS data_laporan (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      file_url TEXT,
+      author_id INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
   const result = await db.execute({ sql: "SELECT id FROM users WHERE username = ?", args: ['admin'] });
   if (result.rows.length === 0) {
-    const hashedPassword = bcrypt.hashSync('admin', 10);
+    const hashedPassword = bcrypt.hashSync('admin123', 10);
     await db.execute({
       sql: "INSERT INTO users (username, password, name, role) VALUES (?, ?, ?, ?)",
       args: ['admin', hashedPassword, 'Administrator', 'admin']

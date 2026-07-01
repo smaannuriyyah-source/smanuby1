@@ -50,6 +50,11 @@ export default function ArticleDetailPage() {
         return `https://placehold.co/1200x600/e2e8f0/475569?text=${encodeURIComponent(article?.category_name || 'Article')}`;
     };
 
+    const handleImageError = (e) => {
+        e.target.src = 'https://placehold.co/1200x600/e2e8f0/475569?text=Gambar+Tidak+Tersedia';
+        e.target.onerror = null;
+    };
+
     if (loading) {
         return (
             <div style={{ backgroundColor: '#F9FAFB', minHeight: '100vh' }}>

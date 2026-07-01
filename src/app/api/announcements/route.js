@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import getDatabase from '@/lib/db';
 import { authenticate, unauthorized } from '@/lib/auth';
 import { handleUpload } from '@/lib/upload';
+import { MAX_FILE_SIZE } from '@/lib/config';
 
 export async function GET(request) {
   const user = authenticate(request);
@@ -46,6 +47,9 @@ export async function POST(request) {
 
     let pdf_url = formData.get('existing_pdf_url') || null;
     if (pdfFile && pdfFile.size > 0) {
+      if (pdfFile.size > MAX_FILE_SIZE) {
+        return NextResponse.json({ error: 'Ukuran file maksimal 2MB' }, { status: 400 });
+      }
       const uploadResult = await handleUpload(pdfFile, { resourceType: 'raw', folder: 'sekolahku/pdfs', subdir: 'pdfs' });
       pdf_url = uploadResult.url;
     }

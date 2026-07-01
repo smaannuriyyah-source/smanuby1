@@ -17,12 +17,14 @@ Website resmi SMA An-Nuriyyah Bumiayu dengan CMS untuk mengelola artikel, pengum
 - Beranda dengan hero slider, profil sekolah, program unggulan
 - Blog/artikel dengan kategori dan editor rich text
 - Pengumuman dengan countdown global, upload PDF, tabel data CSV, dan pencarian realtime
+- Data Laporan — tabel dokumen resmi sekolah dengan upload file (PDF/gambar, max 2MB)
 - Form pendaftaran siswa baru (SPMB)
 - CMS Dashboard untuk mengelola:
   - Artikel & kategori
   - Pengumuman (dengan Lexical editor, upload PDF & CSV, countdown)
-  - Pendaftaran siswa baru
+  - Data Laporan (CRUD lengkap dengan upload file)
   - Laporan kegiatan
+  - Pendaftaran siswa baru
   - Manajemen user (admin & penulis)
 - Autentikasi JWT dengan role-based access
 
@@ -73,9 +75,9 @@ npm run db:init
 ## Default Admin
 
 - **Username**: `admin`
-- **Password**: `admin`
+- **Password**: `admin123`
 
-> ⚠️ Ganti password default setelah login pertama!
+> ⚠️ Ganti password default setelah login pertama! Password tidak akan ter-reset saat redeploy.
 
 ## Deploy ke Vercel
 
@@ -108,6 +110,7 @@ src/
 │   │   ├── upload/        # File upload
 │   │   └── users/         # CRUD users
 │   ├── dashboard/         # CMS pages
+│   ├── data-laporan/      # Public data laporan page
 │   ├── pengumuman/        # Public pengumuman page
 │   ├── layout.js          # Root layout
 │   └── page.js            # Homepage
